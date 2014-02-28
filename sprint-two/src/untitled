@@ -1,0 +1,32 @@
+var makeLinkedList = function(){
+  var list = {};
+  list.head = null;
+  list.tail = null;
+
+  list.addToTail = function(value){
+    var nextNode = makeNode(value);
+    nextNode.next = list.tail;
+    if (list.tail === null){
+      list.tail = 0;
+          } else {
+      list.tail++;
+    }
+  };
+
+  list.removeHead = function(){
+  head++;
+  };
+
+  list.contains = function(target, node){
+  };
+
+  return list;
+};
+
+var makeNode = function(value){
+  var node = {};
+  node.value = value;
+  node.next = null;
+
+  return node;
+};
