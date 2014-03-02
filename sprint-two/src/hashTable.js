@@ -5,8 +5,6 @@ var HashTable = function(){
 };
 
 
-// this is the one that caused the infinite loop:
-// change if bucket[h] to bucket [h][0] to stop infinite loop
 HashTable.prototype.insert = function(k, v){
   var i = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(i) || [];
@@ -43,13 +41,13 @@ HashTable.prototype.remove = function(k){
   for (var h = 0; h < bucket.length; h++) {
     var pair = bucket[h];
     if (pair[0] === k) {
-      bucket.splice(pair, 1);
+      bucket.splice(h, 1);
       this._count--;
-      if (this._count > 0.25 * this._limit) {
+      if (this._count < 0.25 * this._limit) {
         this.rehash(0.5 * this._limit);
       }
+      return pair[1];
     }
-    return pair[1];
   }
   return null;
 };
@@ -60,15 +58,12 @@ HashTable.prototype.rehash = function(newLimit) {
   this._count = 0;
   this._storage = makeLimitedArray(this._limit);
   var newHash = this;
-  console.log(oldHash);
   oldHash.each(function(bucket) {
+    if (!bucket) {
+      return;
+    }
     for(var j = 0; j < bucket.length; j++) {
-      if (!bucket) {
-        return;
-      } else {
-        newHash.insert(bucket[j][0],bucket[j][1]);
-      }
+      newHash.insert(bucket[j][0],bucket[j][1]);
     }
   });
 };
-
